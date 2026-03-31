@@ -1,16 +1,28 @@
-// 🔥 Smooth Scroll
+// =========================
+// SMOOTH SCROLL (ONLY INTERNAL LINKS)
+// =========================
 document.querySelectorAll('.nav-link').forEach(link => {
-  link.addEventListener('click', function(e) {
-    e.preventDefault();
-    const target = document.querySelector(this.getAttribute('href'));
-    target.scrollIntoView({
-      behavior: 'smooth'
-    });
+  link.addEventListener('click', function (e) {
+    const href = this.getAttribute('href');
+
+    // Only scroll if it's an internal section link
+    if (href.startsWith("#")) {
+      e.preventDefault();
+
+      const target = document.querySelector(href);
+      if (target) {
+        target.scrollIntoView({
+          behavior: "smooth"
+        });
+      }
+    }
   });
 });
 
 
-// 🔥 Active Navbar Highlight
+// =========================
+// ACTIVE NAVBAR LINK
+// =========================
 const sections = document.querySelectorAll("section");
 const navLinks = document.querySelectorAll(".nav-link");
 
@@ -18,57 +30,68 @@ window.addEventListener("scroll", () => {
   let current = "";
 
   sections.forEach(section => {
-    const sectionTop = section.offsetTop - 100;
-    if (scrollY >= sectionTop) {
+    const sectionTop = section.offsetTop - 120;
+    if (window.scrollY >= sectionTop) {
       current = section.getAttribute("id");
     }
   });
 
   navLinks.forEach(link => {
     link.classList.remove("active");
-    if (link.getAttribute("href") === "#" + current) {
+
+    const href = link.getAttribute("href");
+    if (href === "#" + current) {
       link.classList.add("active");
     }
   });
 });
 
 
-// 🔥 Navbar background change on scroll
+// =========================
+// NAVBAR BACKGROUND ON SCROLL
+// =========================
 const navbar = document.querySelector(".navbar");
 
 window.addEventListener("scroll", () => {
   if (window.scrollY > 50) {
     navbar.style.background = "rgba(15, 23, 42, 0.95)";
   } else {
-    navbar.style.background = "rgba(15, 23, 42, 0.8)";
+    navbar.style.background = "rgba(15, 23, 42, 0.7)";
   }
 });
 
 
-// 🔥 Reveal Animation on Scroll
+// =========================
+// REVEAL ANIMATION ON SCROLL
+// =========================
 const revealElements = document.querySelectorAll(".glass-card, .skill-box");
 
-const revealOnScroll = () => {
+function revealOnScroll() {
   const triggerBottom = window.innerHeight * 0.85;
 
   revealElements.forEach(el => {
-    const boxTop = el.getBoundingClientRect().top;
+    const elementTop = el.getBoundingClientRect().top;
 
-    if (boxTop < triggerBottom) {
+    if (elementTop < triggerBottom) {
       el.classList.add("show");
     }
   });
-};
+}
 
 window.addEventListener("scroll", revealOnScroll);
 
 
-// 🔥 Typing Effect (Hero Section)
+// =========================
+// TYPING EFFECT (HERO)
+// =========================
 const text = "Full Stack Developer & Cybersecurity Enthusiast";
 let index = 0;
 
 function typeEffect() {
   const element = document.querySelector(".lead");
+
+  if (!element) return;
+
   if (index < text.length) {
     element.textContent += text.charAt(index);
     index++;
@@ -76,7 +99,34 @@ function typeEffect() {
   }
 }
 
-window.onload = () => {
-  document.querySelector(".lead").textContent = "";
-  typeEffect();
-};
+
+// =========================
+// CURSOR GLOW EFFECT (OPTIONAL 🔥)
+// =========================
+document.addEventListener("mousemove", e => {
+  const glow = document.createElement("div");
+  glow.className = "cursor-glow";
+
+  glow.style.left = e.clientX + "px";
+  glow.style.top = e.clientY + "px";
+
+  document.body.appendChild(glow);
+
+  setTimeout(() => glow.remove(), 300);
+});
+
+
+// =========================
+// INITIAL LOAD
+// =========================
+window.addEventListener("load", () => {
+  const element = document.querySelector(".lead");
+
+  if (element) {
+    element.textContent = "";
+    typeEffect();
+  }
+
+  // Trigger reveal once on load
+  revealOnScroll();
+});
